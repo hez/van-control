@@ -1,6 +1,6 @@
 '''
 TabbedPanel
-============
+===========
 '''
 # Python
 from pprint import pprint
@@ -15,6 +15,7 @@ from kivy.config import ConfigParser
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
 from kivy.uix.floatlayout import FloatLayout
+from kivy.uix.image import Image
 from kivy.uix.tabbedpanel import TabbedPanel, TabbedPanelItem
 from kivy.uix.settings import Settings
 from kivy.uix.slider import Slider
@@ -58,13 +59,6 @@ class VanTabbedPanel(TabbedPanel):
 class VanApp(App):
     def __init__(self):
         App.__init__(self)
-        self.config = ConfigParser()
-        self.config.read('van.ini')
-        self.device_server = DeviceServerProxy(
-            host = self.config.get("server", "host"),
-            port = self.config.getint("server", "port"),
-            app = self)
-        self.device_server.start()
 
     # TODO support multiple tabs here
     def find_widget_with_name(self, name):
@@ -79,9 +73,42 @@ class VanApp(App):
         # keep running until all secondary threads exit.
         self.device_server.stop.set()
 
+    def build_config(self, config):
+        config.setdefaults('server', {
+            'host': 'localhost',
+            'port': 9292
+        })
+
+    def build_settings(self, settings):
+        jsondata = """[
+    { "type": "title",
+      "title": "Test application" },
+    { "type": "string",
+      "title": "Host",
+      "desc": "Host",
+      "section": "server",
+      "key": "host" },
+    { "type": "numeric",
+      "title": "Port",
+      "desc": "Port",
+      "section": "server",
+      "key": "port" }
+]
+"""
+        settings.add_json_panel('server', self.config, data = jsondata)
+        settings
+
     def build(self):
         self.root = VanTabbedPanel()
-        self.settings = Settings()
+        settings_widget = self.root.ids['settings']
+        def settingsbutton(instance):
+            self.open_settings()
+        settings_widget.bind(on_press = settingsbutton)
+        self.device_server = DeviceServerProxy(
+            host = self.config.get("server", "host"),
+            port = self.config.getint("server", "port"),
+            app = self)
+        self.device_server.start()
 #        th = TabWithBoxLayout(text="Home")
 #        th.content.add_widget(SliderWithLabel(text='Lights'))
 #        th.content.add_widget(SliderWithLabel(text='Other'))

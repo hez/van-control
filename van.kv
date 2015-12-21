@@ -13,16 +13,27 @@
         id: value
 
 <HomeTab@TabbedPanelItem>
-    text: "Home"
-    background_down: './home-grey.png'
+    background_normal: 'images/home-inactive.png'
+    background_down: 'images/home-active.png'
+    border: [1, 1, 1, 1]
     BoxLayout:
         SliderWithLabel:
             id: Main Lights
             remote_name: "Main Lights"
             text: "Lights"
 
+<SettingsTab@TabbedPanelItem>
+    background_normal: 'images/settings.png'
+    background_down: 'images/settings.png'
+    border: [1, 1, 1, 1]
+
 <VanTabbedPanel>:
+    tab_height: 64
+    tab_width: 64
     do_default_tab: False
 
     HomeTab:
         id: home_tab
+
+    SettingsTab:
+        id: settings
