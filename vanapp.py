@@ -2,7 +2,7 @@
 TabbedPanel
 ============
 '''
-from device_server_proxy import DeviceServerProxy
+# Python
 from pprint import pprint
 import pdb
 
@@ -19,34 +19,8 @@ from kivy.uix.tabbedpanel import TabbedPanel, TabbedPanelItem
 from kivy.uix.settings import Settings
 from kivy.uix.slider import Slider
 
-Builder.load_string("""
-<SpecialSlider>
-    orientation: 'vertical'
-
-<SliderWithLabel>
-    orientation: 'vertical'
-    valign: 'top'
-    Label:
-        text: root.text
-        size_hint: 1, .25
-    SpecialSlider:
-        id: value
-
-<HomeTab@TabbedPanelItem>
-    text: "Home"
-    background_down: './home-grey.png'
-    BoxLayout:
-        SliderWithLabel:
-            id: Main Lights
-            remote_name: "Main Lights"
-            text: "Lights"
-
-<VanTabbedPanel>:
-    do_default_tab: False
-
-    HomeTab:
-        id: home_tab
-""")
+# Local libraries
+from device_server_proxy import DeviceServerProxy
 
 class SpecialSlider(Slider):
     from_remote = False
